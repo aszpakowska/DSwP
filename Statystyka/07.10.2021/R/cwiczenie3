@@ -1,0 +1,4 @@
+library(e1071)
+data <- read.csv("C:/Users/48785/Downloads/Wzrost.csv", header=FALSE, sep=",")
+
+print(summary(data))

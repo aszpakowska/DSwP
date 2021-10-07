@@ -1,0 +1,14 @@
+install.packages("e1071")
+library(e1071)
+
+data <- read.csv('C:/Users/48785/Downloads/napoje_po_reklamie.csv',sep=";")
+print(data)
+
+typeof(data)
+print(lapply(data[,-1],mean))
+print(lapply(data[,-1],min))
+print(lapply(data[,-1],max))
+print(lapply(data[,-1],mad))
+print(lapply(data[,-1],kurtosis))
+print(lapply(data[,-1],var))
+
