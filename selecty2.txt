@@ -1,0 +1,75 @@
+**************************1************************************
+DECLARE  
+		numer_max departments.department_id%TYPE;
+	BEGIN
+		SELECT MAX(department_id)+10
+		   INTO numer_max FROM departments;
+           INSERT INTO departments (department_id, department_name) VALUES(numer_max, 'EDUCATION');
+	END;
+
+*************************2***************************************
+DECLARE  
+		numer_max departments.department_id%TYPE;
+	BEGIN
+		SELECT MAX(department_id)+10
+		   INTO numer_max FROM departments;
+           INSERT INTO departments (department_id, department_name,location_id) 
+	   VALUES(numer_max, 'EDUCATION', '3000');
+	END;
+
+select *from departments where department_id=300
+
+**********************3******************************************
+CREATE TABLE nowa (kolumna1 VARCHAR(20))
+
+DECLARE
+    zmienna nowa.kolumna1%TYPE;
+    BEGIN
+        FOR i IN 1..10
+        LOOP
+        zmienna := i;
+        IF i=4  OR i=6 THEN CONTINUE;
+        END IF;
+        INSERT INTO nowa(kolumna1) VALUES(zmienna);
+        END LOOP;
+    END;
+
+************************4****************************************
+DECLARE
+    kraje countries%ROWTYPE;
+    
+    BEGIN
+        SELECT *
+        INTO kraje FROM countries
+        WHERE country_id = 'CA';
+    DBMS_OUTPUT.PUT_LINE('Country name: ' || kraje.country_name || '  |  ' || ' Region: ' || kraje.region_id);
+    END;
+
+********************************5********************************
+DECLARE
+    TYPE dept_table_type 
+      IS TABLE OF departments.department_name%TYPE 
+        INDEX BY PLS_INTEGER;
+    my_dept_table  dept_table_type;
+    loop_count     NUMBER(2) := 10;
+    deptno         NUMBER(4) := 0;
+BEGIN
+    FOR i IN 1..loop_count
+    LOOP
+        deptno := 10 + deptno;
+        SELECT department_name
+        INTO my_dept_table(i)
+        FROM departments
+        WHERE department_id = deptno;
+    END LOOP;
+
+    FOR j IN 1..loop_count
+    LOOP
+        DBMS_OUTPUT.PUT_LINE(my_dept_table(j));
+    END LOOP;
+END;
+
+
+
+
+
