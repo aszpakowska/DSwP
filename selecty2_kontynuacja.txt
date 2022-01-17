@@ -1,0 +1,160 @@
+
+
+*************************7*********************************************
+DECLARE
+    CURSOR salaries IS
+    SELECT
+        e.salary,
+        e.last_name
+    FROM
+        employees e
+    WHERE
+        e.department_id = 50;
+
+    salary    employees.salary%TYPE;
+    last_name employees.last_name%TYPE;
+BEGIN
+    OPEN salaries;
+    LOOP
+        FETCH salaries INTO
+            salary,
+            last_name;
+        EXIT WHEN salaries%notfound;
+        IF ( salary >= 3100 ) THEN
+            dbms_output.put_line(last_name || ' nie dawać podwyżki');
+        ELSE
+            dbms_output.put_line(last_name || ' dać podwyżkę');
+        END IF;
+
+    END LOOP;
+
+    CLOSE salaries;
+END;
+
+*************************************8******************************************
+DECLARE
+    CURSOR salaries (
+        min_salary           NUMBER,
+        max_salary           NUMBER,
+        letter_in_first_name STRING
+    ) IS
+    SELECT
+        e.first_name,
+        e.last_name
+    FROM
+        employees e
+    WHERE
+        e.salary BETWEEN min_salary AND max_salary
+        AND lower(e.first_name) LIKE '%'
+                                     || lower(letter_in_first_name)
+                                     || '%';
+
+    last_name  employees.last_name%TYPE;
+    first_name employees.first_name%TYPE;
+
+8A************************
+
+BEGIN
+    OPEN salaries(1000, 5000, 'A');
+    LOOP
+        FETCH salaries INTO
+            first_name,
+            last_name;
+        EXIT WHEN salaries%notfound;
+        dbms_output.put_line(first_name
+                             || ' '
+                             || last_name);
+    END LOOP;
+
+    CLOSE salaries;
+END;
+
+8B************************
+
+BEGIN
+    OPEN salaries(5000, 20000, 'U');
+    LOOP
+        FETCH salaries INTO
+            first_name,
+            last_name;
+        EXIT WHEN salaries%notfound;
+        dbms_output.put_line(first_name
+                             || ' '
+                             || last_name);
+    END LOOP;
+
+    CLOSE salaries;
+END;
+
+*******************************************9***************************************
+
+9A********************************
+
+create or replace PROCEDURE add_job (
+    job_id    STRING,
+    job_title STRING
+) AS
+BEGIN
+    INSERT INTO jobs (
+            job_id,
+            job_title
+        ) VALUES (
+            job_id,
+            job_title
+        );
+EXCEPTION
+    WHEN others THEN
+        dbms_output.put_line('procedura nieudana');
+END;
+
+9B**************************************
+
+CREATE OR REPLACE PROCEDURE change_title (
+    job_id_input    STRING,
+    job_title_input STRING
+) AS
+    not_updated EXCEPTION;
+BEGIN
+    UPDATE jobs
+    SET
+        job_title = job_title_input
+    WHERE
+        job_id = job_id_input;
+
+    IF ( SQL%rowcount = 0 ) THEN
+        RAISE not_updated;
+    END IF;
+EXCEPTION
+    WHEN not_updated THEN
+        dbms_output.put_line('cos poszlo nie tak. ERROR');
+    WHEN OTHERS THEN
+        dbms_output.put_line('procedura nieudana');
+END;
+
+9C*************************************
+
+CREATE OR REPLACE PROCEDURE delete_job (
+    job_id_input STRING
+) AS
+    not_deleted EXCEPTION;
+BEGIN
+    DELETE FROM jobs
+    WHERE
+        job_id = job_id_input;
+
+    IF ( SQL%rowcount = 0 ) THEN
+        RAISE not_deleted;
+    END IF;
+EXCEPTION
+    WHEN not_deleted THEN
+        dbms_output.put_line('cos poszlo nie tak. ERROR');
+    WHEN OTHERS THEN
+        dbms_output.put_line('procedura nieudana');
+END;
+
+
+
+
+
+
+
